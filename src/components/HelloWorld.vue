@@ -20,15 +20,16 @@
 </template>
 
 <script>
+import { getStudent } from '../resources/index'
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      
+
     }
-  }, 
+  },
   mounted () {
-    this.$axios.get('/api/v1/student',{action: 'get_all'}).then(res => {
+    this.$axios.get('getStudent',{action: 'get_all'}).then(res => {
       console.log(res)
     })
   }

@@ -1,4 +1,5 @@
 'use strict'
+// 检查NodeJS和npm的版本
 require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
@@ -6,12 +7,14 @@ process.env.NODE_ENV = 'production'
 const ora = require('ora')
 const rm = require('rimraf')
 const path = require('path')
+// 在控制台输出带颜色的字体插件
 const chalk = require('chalk')
 const webpack = require('webpack')
 const config = require('../config')
 const webpackConfig = require('./webpack.prod.conf')
 
 const spinner = ora('building for production...')
+// 开启load动画
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {

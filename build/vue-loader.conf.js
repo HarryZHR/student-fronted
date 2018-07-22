@@ -7,6 +7,7 @@ const sourceMapEnabled = isProduction
   : config.dev.cssSourceMap
 
 module.exports = {
+  // CSS加载器
   loaders: utils.cssLoaders({
     sourceMap: sourceMapEnabled,
     extract: isProduction

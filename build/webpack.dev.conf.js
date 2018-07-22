@@ -2,11 +2,14 @@
 const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
+// 一个可以合并数组和对象的插件
 const merge = require('webpack-merge')
 const path = require('path')
 const baseWebpackConfig = require('./webpack.base.conf')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+// 一个用于生成HTML文件并自动注入依赖文件
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+// 用于更友好地输出webpack的警告、错误等信息
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
@@ -44,10 +47,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     }
   },
+  // 配置webpack插件
   plugins: [
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')
     }),
+    // 热部署
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),

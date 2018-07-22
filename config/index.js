@@ -9,7 +9,7 @@ module.exports = {
     env: require('./dev.env'),
     port: 8081,
     // 自动弹出浏览器
-    autoOpenBrowser: true,
+    autoOpenBrowser: false,
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -18,23 +18,19 @@ module.exports = {
         target: 'http://localhost:8080/',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/api': '/'
         },
         cookieDomainRewrite: {
           "*": "localhost"
         }
       }
     },
-
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: true, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
     /**
      * Source Maps
      */
@@ -51,6 +47,7 @@ module.exports = {
   },
 
   build: {
+    env: require('./prod.env'),
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
 
