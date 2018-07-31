@@ -32,7 +32,7 @@
         </div>
         <div class="margin-bottom-20"></div>
         <div>
-          <el-button type="primary" round class="width-300">登  陆</el-button>
+          <el-button type="primary" round class="width-300" @click="login">登  陆</el-button>
         </div>
       </div>
     </div>
@@ -40,14 +40,48 @@
 </template>
 
 <script>
-    export default {
+  import {getStudent,getTeacher} from "../resources";
+  export default {
       data() {
         return {
-          username: '',
-          password: '',
-          role: 1
+          username: '199900001',
+          password: '123',
+          role: 3,
+          teacherIdentity: ''
         }
-      }
+      },
+      methods: {
+        login: function () {
+          if (this.role === 1) {
+            this.$axios.get(getStudent,{params: {
+                action: 'student_login',
+                studentId: this.username,
+                password: this.password
+              } }).then(res => {
+              console.log(res)
+            }).catch(function (err) {
+              console.log(err)
+            })
+          }else {
+            this.$axios.get(getTeacher,{params: {
+                action: 'teacher_login',
+                teacherId: this.username,
+                password: this.password
+              } }).then(res => {
+              this.teacherIdentity = res.data.identity
+              if (this.teacherIdentity === "admin") {
+                this.$router.push({ path: '/home'})
+              }
+            }).catch(function (err) {
+              console.log(err)
+            })
+          }
+        }
+
+      },
+      mounted () {
+        window.aaa = this
+      },
     }
 </script>
 
