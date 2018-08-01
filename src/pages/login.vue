@@ -42,6 +42,7 @@
 <script>
   import {getStudent,getTeacher} from "../resources";
   export default {
+      name: "login",
       data() {
         return {
           username: '199900001',
@@ -65,12 +66,13 @@
           }else {
             this.$axios.get(getTeacher,{params: {
                 action: 'teacher_login',
-                teacherId: this.username,
+                teacherNum: this.username,
                 password: this.password
               } }).then(res => {
               this.teacherIdentity = res.data.identity
               if (this.teacherIdentity === "admin") {
-                this.$router.push({ path: '/home'})
+                // this.$router.push({ path: '/home'})
+                window.loaction.href = window.location.host + '/#/home'
               }
             }).catch(function (err) {
               console.log(err)
