@@ -22,14 +22,18 @@
             <span slot="title">学生管理</span>
           </el-menu-item>
         </router-link>
-        <el-menu-item index="3">
-          <i class="el-icon-menu"></i>
-          <span slot="title">导航三</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-menu"></i>
-          <span slot="title">导航四</span>
-        </el-menu-item>
+        <router-link to="/test1">
+          <el-menu-item index="3">
+            <i class="el-icon-menu"></i>
+            <span slot="title">导航三</span>
+          </el-menu-item>
+        </router-link>
+        <router-link to="/test1">
+          <el-menu-item index="4">
+            <i class="el-icon-menu"></i>
+            <span slot="title">导航四</span>
+          </el-menu-item>
+        </router-link>
       </el-menu>
     </el-col>
   </el-row>

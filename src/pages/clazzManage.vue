@@ -5,7 +5,7 @@
     </div>
     <div class="padding-left-20">
       <div class="text-left margin-bottom-20">
-        <el-select v-model="grade" placeholder="年级" class="margin-right-20">
+        <el-select v-model="selectGrade" placeholder="年级" class="margin-right-20">
           <el-option
             v-for="item in grades"
             :key="item.value"
@@ -13,7 +13,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-select v-model="clazzNum" placeholder="班级号" class="margin-right-20">
+        <el-select v-model="selectClazzNum" placeholder="班级号" class="margin-right-20">
           <el-option
             v-for="item in clazzNums"
             :key="item.value"
@@ -21,7 +21,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-input class="width-200 margin-right-20" v-model="headTeacher" placeholder="班主任"></el-input>
+        <el-input class="width-200 margin-right-20" v-model="inputHeadTeacher" placeholder="班主任"></el-input>
         <el-button type="primary" plain>搜索</el-button>
       </div>
       <el-table
@@ -71,52 +71,30 @@
 </template>
 
 <script>
+    import { getClazz } from '../resources/index'
     export default {
       data() {
         return {
-          clazzList: [{
-            grade: 2018,
-            clazzNum: 1,
-            headTeacher: '王老师',
-            type: '理科',
-            studentNum: 45
-          }, {
-            grade: 2018,
-            clazzNum: 2,
-            headTeacher: '王老师',
-            type: '理科',
-            studentNum: 45
-          }, {
-            grade: 2018,
-            clazzNum: 3,
-            headTeacher: '王老师',
-            type: '理科',
-            studentNum: 45
-          }, {
-            grade: 2018,
-            clazzNum: 4,
-            headTeacher: '王老师',
-            type: '理科',
-            studentNum: 45
-          }],
-          grades: [{
-            value: '2018',
-          }, {
-            value: '2017',
-          }, {
-            value: '2016',
-          }],
-          grade: '',
-          clazzNums: [{
-            value: '1',
-          }, {
-            value: '2',
-          }, {
-            value: '3',
-          }],
-          clazzNum: '',
-          headTeacher: ''
+          clazzList: [
+            {
+              grade: '',
+              clazzNum: '',
+              headTeacherName: '',
+              type: '',
+              studentNum: ''
+            }
+          ],
+          selectGrade: '',
+          grades: {},
+          selectClazzNum: '',
+          clazzNums: {},
+          inputHeadTeacher: ''
         }
+      },
+      mounted () {
+        this.$axios.get(getClazz,{params: {action: 'get_all_page'}}).then(res => {
+          this.clazzList = res.data
+        })
       }
     }
 </script>
