@@ -8,21 +8,20 @@
         <el-select v-model="selectGrade" placeholder="年级" class="margin-right-20">
           <el-option
             v-for="item in grades"
-            :key="item.value"
-            :label="item.value"
-            :value="item.value">
+            :label="item"
+            :value="item">
           </el-option>
         </el-select>
         <el-select v-model="selectClazzNum" placeholder="班级号" class="margin-right-20">
           <el-option
             v-for="item in clazzNums"
-            :key="item.value"
-            :label="item.value"
-            :value="item.value">
+            :key="item"
+            :label="item"
+            :value="item">
           </el-option>
         </el-select>
         <el-input class="width-200 margin-right-20" v-model="inputHeadTeacher" placeholder="班主任"></el-input>
-        <el-button type="primary" plain>搜索</el-button>
+        <el-button type="primary" plain @click="searchClazz">搜索</el-button>
       </div>
       <el-table
         :data="clazzList"
@@ -62,7 +61,7 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          @current-change="pagechange"
+          @current-change="pageChange"
           :total="pageSize * 10">
         </el-pagination>
       </div>
@@ -89,18 +88,35 @@
           pageSize: '',
           currPage: '',
           selectGrade: '',
-          grades: {},
+          grades: [],
           selectClazzNum: '',
-          clazzNums: {},
+          clazzNums: [],
           inputHeadTeacher: ''
         }
       },
       methods: {
-        pagechange (page){
-          this.$axios.get(getClazz,{params: {action: 'get_all_page', pageNo: page}}).then(res => {
+        pageChange (page){
+          this.$axios.get(getClazz,{params: {
+              action: 'get_all_page',
+              pageNo: page,
+              grade: this.selectGrade,
+              clazzNum: this.selectClazzNum,
+              headTeacherId: this.headTeacherName
+            }
+          }).then(res => {
             this.clazzList = res.data.pageList
             this.pageSize = res.data.pageSize
             this.currPage = res.data.pageNum
+          })
+        },
+        searchClazz () {
+          this.$axios.get(getClazz,{params: {
+              action: 'get_all_page',
+              pageNo: page,
+              grade: this.selectGrade,
+              clazzNum: this.selectClazzNum,
+              headTeacherId: this.headTeacherName
+            }
           })
         }
       },
@@ -110,6 +126,13 @@
           this.pageSize = res.data.pageSize
           this.currPage = res.data.pageNum
         })
+        this.$axios.get(getClazz,{params: {action: 'get_clazz_info'}}).then(res => {
+          this.grades = res.data.grades
+          this.clazzNums = res.data.clazzNums
+        })
+      },
+      created () {
+        window.aaa = this
       }
     }
 </script>
