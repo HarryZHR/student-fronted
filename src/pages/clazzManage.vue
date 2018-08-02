@@ -62,7 +62,8 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000">
+          @current-change="pagechange"
+          :total="pageSize * 10">
         </el-pagination>
       </div>
     </div>
@@ -75,6 +76,7 @@
     export default {
       data() {
         return {
+          currentPage: 0,
           clazzList: [
             {
               grade: '',
@@ -84,6 +86,8 @@
               studentNum: ''
             }
           ],
+          pageSize: '',
+          currPage: '',
           selectGrade: '',
           grades: {},
           selectClazzNum: '',
@@ -91,9 +95,20 @@
           inputHeadTeacher: ''
         }
       },
+      methods: {
+        pagechange (page){
+          this.$axios.get(getClazz,{params: {action: 'get_all_page', pageNo: page}}).then(res => {
+            this.clazzList = res.data.pageList
+            this.pageSize = res.data.pageSize
+            this.currPage = res.data.pageNum
+          })
+        }
+      },
       mounted () {
         this.$axios.get(getClazz,{params: {action: 'get_all_page'}}).then(res => {
-          this.clazzList = res.data
+          this.clazzList = res.data.pageList
+          this.pageSize = res.data.pageSize
+          this.currPage = res.data.pageNum
         })
       }
     }
