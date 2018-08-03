@@ -20,7 +20,7 @@
   import Top from "./components/top";
   import LeftNav from "./components/leftNav";
   import Home from "./pages/home";
-  import ClazzManage from "./pages/clazzManage";
+  import ClazzManage from "./pages/clazz/clazzManage";
   export default {
     name: 'App',
     components: {ClazzManage, Home, LeftNav, Top},

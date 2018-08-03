@@ -20,7 +20,7 @@
 <script>
   import Top from "@/components/top";
   import LeftNav from "@/components/leftNav";
-  import ClazzManage from "@/pages/clazzManage";
+  import ClazzManage from "@/pages/clazz/clazzManage";
   export default {
     components: {ClazzManage, LeftNav, Top},
   }
