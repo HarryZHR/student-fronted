@@ -13,12 +13,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="文理科：" align="left">
-        <el-select v-model="clazzForm.selectType" placeholder="文理科" class="width-300">
-          <el-option v-for="type in types" :key="type.typeName" :label="type.typeName" :value="type.typeName">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item align="left">
         <el-button type="primary" @click="addClazz">立即创建</el-button>
       </el-form-item>
@@ -28,24 +22,15 @@
 
 <script>
     import {getTeacher, getClazz} from "../../resources";
-    import qs from 'qs';
     export default {
       data() {
         return {
           clazzForm: {
             grade: '',
             clazzNum: '',
-            selectTeacherId: '',
-            selectType: ''
+            selectTeacherId: ''
           },
           teachers: [],
-          types: [{
-            typeName: '理科'
-          },
-            {
-              typeName: '文科'
-            }
-          ],
         }
       },
       methods :{
@@ -53,8 +38,7 @@
           let body = {
             "grade": this.clazzForm.grade,
             "clazzNum": this.clazzForm.clazzNum,
-            'headTeacherId': this.clazzForm.selectTeacherId,
-            'type': this.clazzForm.selectType
+            'headTeacherId': this.clazzForm.selectTeacherId
           }
           let config = {
             params:{action: 'save_one'}
