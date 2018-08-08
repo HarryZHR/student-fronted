@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="text-left margin-bottom-20 padding-left-20">
-      <el-button type="primary" @click="toAddClazz">新建班级</el-button>
+      <el-button type="primary" @click="toAddClazz('single')">新建班级</el-button>
+      <el-button type="primary" @click="toAddClazz('multi')">批量创建</el-button>
     </div>
     <div class="padding-left-20">
       <div class="text-left margin-bottom-20">
@@ -19,13 +20,17 @@
       <el-table :data="clazzList" stripe style="width: 100%">
         <el-table-column align="center" prop="grade" label="年级" width="180">
         </el-table-column>
-        <el-table-column align="center" prop="clazzNum" label="班级号" width="180">
+        <el-table-column align="center" prop="startClazzNum" label="班级号" width="180">
         </el-table-column>
         <el-table-column align="center" prop="headTeacherName" label="班主任">
         </el-table-column>
-        <el-table-column align="center" prop="type" label="文/理">
-        </el-table-column>
         <el-table-column align="center" prop="studentNum" label="学生数">
+        </el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+            <el-button type="text" size="small">编辑</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -72,8 +77,25 @@
             this.currPage = res.data.pageNum
           })
         },
-        toAddClazz (){
-          this.$router.push('/addClazz')
+        toAddClazz (flag){
+          if (flag === 'single') {
+            this.$router.push({
+              name: 'addClazz',
+              query: {
+                addType: 'single'
+              }
+            })
+          } else if (flag === 'multi') {
+            this.$router.push({
+              name: 'addClazz',
+              query: {
+                addType: 'multi'
+              }
+            })
+          }
+        },
+        handleClick(row) {
+          console.log(row);
         }
       },
       mounted () {
