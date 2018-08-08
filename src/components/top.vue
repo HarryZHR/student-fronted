@@ -1,5 +1,7 @@
 <template>
-    <div>这里是头部</div>
+    <div class="back-color-white height-60">
+      
+    </div>
 </template>
 
 <script>
@@ -9,5 +11,10 @@
 </script>
 
 <style scoped>
-
+  .back-color-white {
+    background-color: #fff;
+  }
+  .height-60 {
+    height: 40px;
+  }
 </style>

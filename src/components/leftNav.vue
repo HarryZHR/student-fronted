@@ -1,9 +1,8 @@
 <template>
-  <el-row class="tac">
+  <el-row class="tac box-shadow">
     <el-col :span="24">
       <h5>菜单栏</h5>
-      <el-menu
-        default-active="2"
+      <el-menu default-active="1"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
