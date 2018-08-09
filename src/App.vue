@@ -119,4 +119,8 @@
   .cursor-pointer {
     cursor: pointer;
   }
+
+  .width-150 {
+    width: 150px;
+  }
 </style>

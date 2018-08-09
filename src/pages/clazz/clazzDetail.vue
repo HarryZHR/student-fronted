@@ -24,15 +24,12 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <router-link :to="`/clazz/${scope.row.studentId}/view`" style="color: #33aaff;">查看</router-link>
-          <router-link :to="`/clazz/${scope.row.studentId}/edit`" style="color: #33aaff;">编辑</router-link>
         </template>
       </el-table-column>
     </el-table>
-    <div>
-      <div class="block text-right padding-top-20">
-        <el-pagination background layout="prev, pager, next" @current-change="pageChange" :total="total * 10">
-        </el-pagination>
-      </div>
+    <div class="block text-right padding-top-20">
+      <el-pagination background layout="prev, pager, next" @current-change="pageChange" :total="total * 10">
+      </el-pagination>
     </div>
   </div>
 </template>

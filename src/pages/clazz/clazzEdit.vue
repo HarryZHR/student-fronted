@@ -16,15 +16,26 @@
         </i>
       </el-input>
       <el-dialog title="选择班主任" :visible.sync="dialogTableVisible">
-        <div>
-          班主任姓名：
-          <el-input class="width-200"></el-input>
+        <div align="center">
+          教师工号：
+          <el-input class="width-150"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+          教师姓名：
+          <el-input class="width-150"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-button type="primary">搜索</el-button>
         </div>
-        <el-table :data="teachers">
-          <el-table-column property="date" label="日期" width="150"></el-table-column>
-          <el-table-column property="name" label="姓名" width="200"></el-table-column>
-          <el-table-column property="address" label="地址"></el-table-column>
+        <el-table :data="teachers" align="center">
+          <el-table-column property="teacherNum" label="工号" width="150" align="center"></el-table-column>
+          <el-table-column property="name" label="姓名" width="200" align="center"></el-table-column>
+          <el-table-column label="操作" width="200" align="center">
+            <template slot-scope="scope">
+              <el-button>选择</el-button>
+            </template>
+          </el-table-column>
         </el-table>
+        <div class="block text-right padding-top-20">
+          <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10">
+          </el-pagination>
+        </div>
       </el-dialog>
 
     </div>
@@ -52,15 +63,29 @@
         clazzName: '高三(8)班',
         headTeacherName:'李四',
         dialogTableVisible: false,
-        teachers:[]
+        teachers:[
+          {
+            "teacherNum": '001',
+            "name": '李四'
+          },
+          {
+            "teacherNum": '002',
+            "name": '王五'
+          }
+        ],
+        teacherTotal: 10
       }
     },
     methods: {
+      dialogPageChange() {
 
+      }
     }
   }
 </script>
 
 <style scoped>
-
+  .el-table td, .el-table th {
+    padding: 5px 0;
+  }
 </style>
