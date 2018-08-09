@@ -1,10 +1,16 @@
 <template>
   <div>
-    <div class="text-left margin-bottom-20 padding-left-20">
+    <div class="margin-bottom-20">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item v-for="item in this.breadCrumbList" :to="{path: item.link}">{{ item.name }}
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="text-left margin-bottom-20">
       <el-button type="primary" @click="toAddClazz('single')">新建班级</el-button>
       <el-button type="primary" @click="toAddClazz('multi')">批量创建</el-button>
     </div>
-    <div class="padding-left-20">
+    <div>
       <div class="text-left margin-bottom-20">
         <el-select v-model="selectGrade" placeholder="年级" class="margin-right-20">
           <el-option v-for="item in grades" :label="item" :value="item">
@@ -28,8 +34,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <router-link :to="`/clazz/${scope.row.clazzId}/view`" style="color: #33aaff;">查看</router-link>
+            <router-link :to="`/clazz/${scope.row.clazzId}/edit`" style="color: #33aaff;">编辑</router-link>
           </template>
         </el-table-column>
       </el-table>
@@ -40,111 +46,107 @@
         </el-pagination>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-    import { getClazz } from '../../resources/index'
-    export default {
-      data() {
-        return {
-          currentPage: 0,
-          clazzList: [
-          ],
-          total: '',
-          currPage: '',
-          selectGrade: '',
-          grades: [],
-          selectClazzNum: '',
-          clazzNums: [],
-          inputHeadTeacher: ''
-        }
-      },
-      methods: {
-        // 改变页码或者搜索时调用，搜索时之间传参数为:1
-        pageChange (page){
-          this.$axios.get(getClazz,{params: {
-              action: 'get_all_page',
-              pageNo: page,
-              grade: this.selectGrade,
-              clazzNum: this.selectClazzNum,
-              headTeacherName: this.inputHeadTeacher
-            }
-          }).then(res => {
-            this.clazzList = res.data.pageList
-            this.total = res.data.total
-            this.currPage = res.data.pageNum
+  import {ClazzResource} from '../../resources/index'
+  import Clazz from '@/resources/axios'
+
+  export default {
+    data() {
+      return {
+        currentPage: 0,
+        clazzList: [],
+        total: '',
+        currPage: '',
+        selectGrade: '',
+        grades: [],
+        selectClazzNum: '',
+        clazzNums: [],
+        inputHeadTeacher: '',
+        // 面包屑
+        breadCrumbList: [
+          {
+            name: '首页',
+            link: '/'
+          },
+          {
+            name: '班级管理',
+            link: '/clazz-manage'
+          }
+        ]
+      }
+    },
+    methods: {
+      async getClazz (param = {}, callback) {
+        try {
+          await Clazz.get(ClazzResource, param).then(function (res) {
+            callback && callback(res)
           })
-        },
-        toAddClazz (flag){
-          if (flag === 'single') {
-            this.$router.push({
-              name: 'addClazz',
-              query: {
-                addType: 'single'
-              }
-            })
-          } else if (flag === 'multi') {
-            this.$router.push({
-              name: 'addClazz',
-              query: {
-                addType: 'multi'
-              }
-            })
-          }
-        },
-        handleClick(row) {
-          console.log(row);
+        } catch (e) {
+          console.log(e)
+          this.$message.warning('获取班级信息失败')
         }
       },
-      mounted () {
-        // 页面加载获取所有班级
-        this.$axios.get(getClazz,{params: {
-            action: 'get_all_page'
-          }
-        }).then(res => {
+      // 改变页码或者搜索时调用，搜索时直接传参数为:1
+      pageChange(page) {
+        let param = {
+          action: 'get_all_page',
+          pageNo: page,
+          grade: this.selectGrade,
+          clazzNum: this.selectClazzNum,
+          headTeacherName: this.inputHeadTeacher
+        }
+        this.getClazz(param, res => {
           this.clazzList = res.data.pageList
           this.total = res.data.total
           this.currPage = res.data.pageNum
         })
-        // 获取所有班级号以及年级号
-        this.$axios.get(getClazz,{params: {
-            action: 'get_clazz_info'
-          }
-        }).then(res => {
-          this.grades = res.data.grades
-          this.clazzNums = res.data.clazzNums
-          this.grades.splice(0, 0, '')
-          this.clazzNums.splice(0, 0, '')
-        })
       },
-      created () {
-        window.aaa = this
-      }
+      toAddClazz(flag) {
+        if (flag === 'single') {
+          this.$router.push({
+            name: 'addClazzPage',
+            query: {
+              addType: 'single'
+            }
+          })
+        } else if (flag === 'multi') {
+          this.$router.push({
+            name: 'addClazzPage',
+            query: {
+              addType: 'multi'
+            }
+          })
+        }
+      },
+      handleClick(row) {
+        this.getClazz({})
+        console.log(row);
+      },
+    },
+    mounted() {
+      // 页面加载获取所有班级
+      this.getClazz({action: 'get_all_page'}, res => {
+        this.clazzList = res.data.pageList
+        this.total = res.data.total
+        this.currPage = res.data.pageNum
+      })
+      // 获取所有班级号以及年级号
+      this.getClazz({action: 'get_clazz_info'}, res => {
+        this.grades = res.data.grades
+        this.clazzNums = res.data.clazzNums
+        this.grades.splice(0, 0, '')
+        this.clazzNums.splice(0, 0, '')
+      })
+    },
+    created() {
+      window.aaa = this
     }
+  }
 </script>
 
 <style scoped>
-  .width-200 {
-    width: 200px;
-  }
-  .text-left {
-    text-align: left;
-  }
-  .text-right {
-    text-align: right;
-  }
-  .margin-bottom-20 {
-    margin-bottom: 20px;
-  }
-  .margin-right-20 {
-    margin-right: 20px;
-  }
-  .padding-left-20 {
-    padding-left: 20px;
-  }
-  .padding-top-20 {
-    padding-top: 20px;
-  }
+
 </style>

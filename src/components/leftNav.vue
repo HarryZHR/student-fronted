@@ -1,7 +1,7 @@
 <template>
   <el-row class="tac box-shadow">
     <el-col :span="24">
-      <h5>菜单栏</h5>
+      <h5>学生管理系统</h5>
       <el-menu default-active="1"
         class="el-menu-vertical-demo"
         @open="handleOpen"
@@ -9,7 +9,7 @@
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
-        <router-link to="/clazzManage">
+        <router-link to="/clazz-manage">
           <el-menu-item index="1">
             <i class="el-icon-menu"></i>
             <span slot="title">班级管理</span>

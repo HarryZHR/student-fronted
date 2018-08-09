@@ -40,7 +40,7 @@
 </template>
 
 <script>
-  import {getStudent,getTeacher} from "../resources";
+  import {StudentResource,TeacherResource} from "../resources";
   export default {
       name: "login",
       data() {
@@ -54,7 +54,7 @@
       methods: {
         login: function () {
           if (this.role === 1) {
-            this.$axios.get(getStudent,{params: {
+            this.$axios.get(StudentResource,{params: {
                 action: 'student_login',
                 studentId: this.username,
                 password: this.password
@@ -64,7 +64,7 @@
               console.log(err)
             })
           }else {
-            this.$axios.get(getTeacher,{params: {
+            this.$axios.get(TeacherResource,{params: {
                 action: 'teacher_login',
                 teacherNum: this.username,
                 password: this.password
@@ -88,12 +88,6 @@
 </script>
 
 <style scoped>
-  .width-300 {
-    width: 300px;
-  }
-  .margin-bottom-20 {
-    margin-bottom: 20px;
-  }
   .login-input {
     border: 1px solid brown;
     width: 400px;

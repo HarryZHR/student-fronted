@@ -4,10 +4,11 @@ import login from '@/pages/login'
 import home from '@/pages/home'
 import clazzManage from '@/pages/clazz/clazzManage'
 import addClazz from '@/pages/clazz/addClazz'
+import viewClazz from '@/pages/clazz/clazzDetail'
+import editClazz from '@/pages/clazz/clazzEdit'
 import test1 from '@/pages/test1'
 
 Vue.use(Router)
-
 export default new Router({
   routes: [
     {
@@ -17,12 +18,12 @@ export default new Router({
     },
     {
       path: '/home',
-      name: 'home',
+      name: 'homePage',
       component: home
     },
     {
-      path: '/clazzManage',
-      name: 'clazzManage',
+      path: '/clazz-manage',
+      name: 'clazzManagePage',
       component: clazzManage
     },
     {
@@ -31,9 +32,17 @@ export default new Router({
       component: test1
     },
     {
-      path: '/addClazz',
-      name: 'addClazz',
+      path: '/add-clazz',
+      name: 'addClazzPage',
       component: addClazz
+    },
+    {
+      path: '/clazz/:id/view',
+      component: viewClazz
+    },
+    {
+      path: '/clazz/:id/edit',
+      component: editClazz
     }
   ]
 })
