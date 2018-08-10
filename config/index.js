@@ -7,7 +7,7 @@ const path = require('path')
 module.exports = {
   dev: {
     env: require('./dev.env'),
-    port: 8081,
+    port: 8082,
     // 自动弹出浏览器
     autoOpenBrowser: false,
     // Paths

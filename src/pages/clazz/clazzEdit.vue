@@ -12,7 +12,7 @@
     <div class="text-left margin-bottom-20">
       班主任：
       <el-input class="width-200" v-model="headTeacherName">
-        <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="dialogTableVisible = true">
+        <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="openDialog">
         </i>
       </el-input>
       <el-dialog title="选择班主任" :visible.sync="dialogTableVisible">
@@ -43,6 +43,8 @@
 </template>
 
 <script>
+  import Visit from '@/resources/axios'
+  import {TeacherResource} from "../../resources";
   export default {
     name: "clazzEdit",
     data() {
@@ -79,6 +81,10 @@
     methods: {
       dialogPageChange() {
 
+      },
+      openDialog() {
+        this.dialogTableVisible = true
+        Visit.get(TeacherResource, {action:'get_all'})
       }
     }
   }
