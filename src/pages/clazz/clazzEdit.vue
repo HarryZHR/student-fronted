@@ -11,24 +11,24 @@
     </div>
     <div class="text-left margin-bottom-20">
       班主任：
-      <el-input class="width-200" v-model="headTeacherName">
+      <el-input class="width-200" v-model="headTeacher.teacherName">
         <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="openDialog">
         </i>
       </el-input>
       <el-dialog title="选择班主任" :visible.sync="dialogTableVisible">
         <div align="center">
           教师工号：
-          <el-input class="width-150"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-input class="width-150" v-model="selectTeacherNum"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
           教师姓名：
-          <el-input class="width-150"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-button type="primary">搜索</el-button>
+          <el-input class="width-150" v-model="selectTeacherName"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-button type="primary" @click="dialogPageChange(1)">搜索</el-button>
         </div>
         <el-table :data="teachers" align="center">
           <el-table-column property="teacherNum" label="工号" width="150" align="center"></el-table-column>
-          <el-table-column property="name" label="姓名" width="200" align="center"></el-table-column>
+          <el-table-column property="teacherName" label="姓名" width="200" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-              <el-button>选择</el-button>
+              <el-button @click="selectTeacher(scope.row)">选择</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -37,14 +37,31 @@
           </el-pagination>
         </div>
       </el-dialog>
-
+    </div>
+    <div>
+      <el-table>
+        <el-table-column property="studentNum" label="学号" width="150" align="center"></el-table-column>
+        <el-table-column property="studentName" label="姓名" width="200" align="center"></el-table-column>
+        <el-table-column property="studentGender" label="性别" width="200" align="center"></el-table-column>
+        <el-table-column property="studentAge" label="年龄" width="200" align="center"></el-table-column>
+        <el-table-column property="studentPost" label="职务" width="200" align="center"></el-table-column>
+        <el-table-column label="操作" width="200" align="center">
+          <template slot-scope="scope">
+            <el-button @click="selectTeacher(scope.row)">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block text-right padding-top-20">
+        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import Visit from '@/resources/axios'
-  import {TeacherResource} from "../../resources";
+  import {TeacherResource} from '../../resources/index'
   export default {
     name: "clazzEdit",
     data() {
@@ -63,28 +80,52 @@
           }
         ],
         clazzName: '高三(8)班',
-        headTeacherName:'李四',
+        headTeacher:{
+          teacherName: '李四',
+          teacherId: '212121'
+        },
         dialogTableVisible: false,
-        teachers:[
-          {
-            "teacherNum": '001',
-            "name": '李四'
-          },
-          {
-            "teacherNum": '002',
-            "name": '王五'
-          }
-        ],
-        teacherTotal: 10
+        teachers:[],
+        teacherTotal: '',
+        selectTeacherNum: '',
+        selectTeacherName: ''
       }
     },
     methods: {
-      dialogPageChange() {
+      async getTeacher(param = {}, callback) {
+        try {
+          await Visit.get(TeacherResource, param).then(function (res) {
+            callback && callback(res)
+          })
+        } catch (e) {
+          console.log(e)
+          this.$message.error('获取教师信息失败')
+        }
 
       },
       openDialog() {
         this.dialogTableVisible = true
-        Visit.get(TeacherResource, {action:'get_all'})
+        this.getTeacher({action: 'get_page'}, res => {
+          this.teachers = res.data.pageList
+          this.teacherTotal = res.data.total
+        })
+      },
+      dialogPageChange(page) {
+        let param = {
+          action: 'get_page',
+          pageNo: page,
+          teacherNum: this.selectTeacherNum,
+          teacherName: this.selectTeacherName
+        }
+        this.getTeacher(param, res => {
+          this.teachers = res.data.pageList
+          this.teacherTotal = res.data.total
+        })
+      },
+      selectTeacher(row) {
+        this.headTeacher.teacherId = row.id
+        this.headTeacher.teacherName = row.name
+        this.dialogTableVisible = false
       }
     }
   }

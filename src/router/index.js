@@ -3,10 +3,13 @@ import Router from 'vue-router'
 import login from '@/pages/login'
 import home from '@/pages/home'
 import clazzManage from '@/pages/clazz/clazzManage'
-import addClazz from '@/pages/clazz/addClazz'
+import addClazz from '@/pages/clazz/clazzAdd'
 import viewClazz from '@/pages/clazz/clazzDetail'
 import editClazz from '@/pages/clazz/clazzEdit'
-import test1 from '@/pages/test1'
+import teacherManage from '@/pages/teacher/teacherManage'
+import teacherAdd from '@/pages/teacher/teacherAdd'
+import teacherDetail from '@/pages/teacher/teacherDetail'
+import teacherEdit from '@/pages/teacher/teacherEdit'
 
 Vue.use(Router)
 export default new Router({
@@ -27,11 +30,6 @@ export default new Router({
       component: clazzManage
     },
     {
-      path: '/test1',
-      name: 'test1',
-      component: test1
-    },
-    {
       path: '/add-clazz',
       name: 'addClazzPage',
       component: addClazz
@@ -43,6 +41,24 @@ export default new Router({
     {
       path: '/clazz/:id/edit',
       component: editClazz
+    },
+    {
+      path: '/teacher-manage',
+      name: 'teacherManagePage',
+      component: teacherManage
+    },
+    {
+      path: '/teacher-add',
+      name: 'teacherAdd',
+      component: teacherAdd
+    },
+    {
+      path: '/teacher/:id/view',
+      component: teacherDetail
+    },
+    {
+      path: '/teacher/:id/edit',
+      component: teacherEdit
     }
   ]
 })

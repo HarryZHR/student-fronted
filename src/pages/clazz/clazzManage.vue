@@ -86,7 +86,7 @@
           })
         } catch (e) {
           console.log(e)
-          this.$message.warning('获取班级信息失败')
+          this.$message.error('获取班级信息失败')
         }
       },
       // 改变页码或者搜索时调用，搜索时直接传参数为:1
@@ -120,11 +120,7 @@
             }
           })
         }
-      },
-      handleClick(row) {
-        this.getClazz({})
-        console.log(row);
-      },
+      }
     },
     mounted() {
       // 页面加载获取所有班级

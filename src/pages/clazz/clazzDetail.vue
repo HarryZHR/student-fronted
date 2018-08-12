@@ -35,10 +35,12 @@
 </template>
 
 <script>
+  import Visit from '@/resources/axios'
+  import {ClazzResource} from "../../resources";
   export default {
     name: "clazzDetail",
     data() {
-      return{
+      return {
         breadCrumbList: [
           {
             name: '首页',
@@ -52,46 +54,65 @@
             name: '查看班级',
           }
         ],
-        students:[
+        students: [
           {
-            "studentId":1,
+            "studentId": 1,
             "studentNum": 1,
-            "studentName":'学生一',
+            "studentName": '学生一',
             "birthday": '1994-03',
             "gender": '男'
           },
           {
-            "studentId":2,
+            "studentId": 2,
             "studentNum": 2,
-            "studentName":'学生二',
+            "studentName": '学生二',
             "birthday": '1994-03',
             "gender": '男'
           },
           {
-            "studentId":3,
+            "studentId": 3,
             "studentNum": 3,
-            "studentName":'学生三',
+            "studentName": '学生三',
             "birthday": '1994-03',
             "gender": '男'
           },
           {
-            "studentId":4,
+            "studentId": 4,
             "studentNum": 4,
-            "studentName":'学生四',
+            "studentName": '学生四',
             "birthday": '1994-03',
             "gender": '男'
           },
         ],
-        clazzName: '高三(8)班',
+        clazzName: '',
         headTeacherName: '李四',
-        total: 10
+        total: 10,
+        clazzId: ''
       }
 
     },
     methods: {
+      async getClazz(param = {}, id, callback) {
+        try {
+          await Visit.get(ClazzResource, param, id).then(function (res) {
+            callback && callback(res)
+          })
+        }catch (e) {
+          console.log(e)
+          this.$message.error('获取班级信息失败！')
+        }
+
+      },
       pageChange() {
 
       }
+    },
+    mounted() {
+      this.clazzId = this.$route.params.id
+      this.getClazz({}, this.clazzId, res => {
+        this.clazzName = res.data.grade + ' ('+ res.data.startClazzNum + ')'
+        this.headTeacherName = res.data.headTeacherName
+      })
     }
   }
 </script>

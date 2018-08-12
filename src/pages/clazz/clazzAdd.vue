@@ -33,7 +33,7 @@
         </el-select>
       </el-form-item>
       <el-form-item align="left">
-        <el-button :plain="true" type="primary" @click="addClazz('clazzForm')">立即创建</el-button>
+        <el-button :plain="true" type="primary" @click="clazzAdd('clazzForm')">立即创建</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -114,7 +114,7 @@
           this.$message.warning('获取教师失败')
         }
       },
-      addClazz(formName) {
+      clazzAdd(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let param = {action: 'save_list'}

@@ -15,10 +15,10 @@
             <span slot="title">班级管理</span>
           </el-menu-item>
         </router-link>
-        <router-link to="/test1">
+        <router-link to="/teacher-manage">
           <el-menu-item index="2">
             <i class="el-icon-menu"></i>
-            <span slot="title">学生管理</span>
+            <span slot="title">教师管理</span>
           </el-menu-item>
         </router-link>
         <router-link to="/test1">
