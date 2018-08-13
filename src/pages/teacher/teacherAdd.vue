@@ -7,16 +7,18 @@
       </el-breadcrumb>
     </div>
     <div>
-      <el-form :model="teacherForm">
-        <el-form-item label="教师工号：" align="left">
+      <el-form :model="teacherForm" :rules="teacherRules" ref="teacherForm">
+        <el-form-item label="教师工号：" align="left" prop="teacherNum">
           <el-input v-model="teacherForm.teacherNum" class="width-300"></el-input>
         </el-form-item>
-        <el-form-item label="教师姓名：" align="left">
+        <el-form-item label="教师姓名：" align="left" prop="teacherName">
           <el-input v-model="teacherForm.teacherName" class="width-300"></el-input>
         </el-form-item>
-        <el-form-item label="教师性别：" align="left">
-          <el-radio v-model="teacherForm.teacherGender" label="male">男</el-radio>
-          <el-radio v-model="teacherForm.teacherGender" label="female">女</el-radio>
+        <el-form-item label="教师性别：" align="left" prop="teacherGender">
+          <el-radio-group v-model="teacherForm.teacherGender">
+            <el-radio label="male">男</el-radio>
+            <el-radio label="female">女</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="出生年月：" align="left">
           <el-date-picker v-model="teacherForm.teacherBirthday" default-value="1980-01-01" type="date" placeholder="选择日期">
@@ -56,6 +58,17 @@
           teacherName: '',
           teacherGender: '',
           teacherBirthday: ''
+        },
+        teacherRules: {
+          teacherNum: [
+            { required: true, message: '工号不能为空！', trigger: 'blur'},
+          ],
+          teacherName: [
+            { required: true, message: '姓名不能为空！', trigger: 'blur'}
+          ],
+          teacherGender: [
+            { required: true, message: '性能不能为空！', trigger: 'blur'}
+          ]
         }
       }
     },
