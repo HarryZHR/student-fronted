@@ -17,7 +17,7 @@
         </el-table-column>
         <el-table-column align="center" prop="teacherGender" label="性别" width="180">
         </el-table-column>
-        <el-table-column align="center" prop="teacherBirthday" label="年龄" width="180">
+        <el-table-column align="center" prop="teacherAge" label="年龄" width="180">
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
@@ -56,7 +56,7 @@
             callback && callback(res)
           })
         } catch (e) {
-          console.log(e)
+          console.log(e);
           this.$message.error('获取教师列表失败！')
         }
       },
@@ -69,7 +69,7 @@
     },
     mounted() {
       this.getTeacher({action: 'get_page'}, res=> {
-        this.teachers = res.data.pageList
+        this.teachers = res.data.t
       })
     }
   }

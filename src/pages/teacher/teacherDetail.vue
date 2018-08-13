@@ -62,10 +62,10 @@
     mounted() {
       let id = this.$route.params.id
       this.getTeacher({action: 'get_one'},id, res => {
-        this.teacherGender = res.data.teacherGender
-        this.teacherName = res.data.teacherName
-        this.teacherNum = res.data.teacherNum
-        this.teacherBirthday = res.data.teacherBirthday
+        this.teacherGender = res.data.t.teacherGender;
+        this.teacherName = res.data.t.teacherName;
+        this.teacherNum = res.data.t.teacherNum;
+        this.teacherBirthday = res.data.t.teacherBirthday
       })
     }
   }

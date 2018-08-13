@@ -56,7 +56,6 @@
   export default {
     data() {
       return {
-        currentPage: 0,
         clazzList: [],
         total: '',
         currPage: '',
@@ -85,8 +84,8 @@
             callback && callback(res)
           })
         } catch (e) {
-          console.log(e)
-          this.$message.error('获取班级信息失败')
+          console.log(e);
+          this.$message.error('获取班级信息失败！')
         }
       },
       // 改变页码或者搜索时调用，搜索时直接传参数为:1
@@ -97,11 +96,11 @@
           grade: this.selectGrade,
           clazzNum: this.selectClazzNum,
           headTeacherName: this.inputHeadTeacher
-        }
+        };
         this.getClazz(param, res => {
-          this.clazzList = res.data.pageList
-          this.total = res.data.total
-          this.currPage = res.data.pageNum
+          this.clazzList = res.data.t;
+          this.total = res.data.totalPages;
+          this.currPage = this.currPage + 1
         })
       },
       toAddClazz(flag) {
@@ -125,15 +124,15 @@
     mounted() {
       // 页面加载获取所有班级
       this.getClazz({action: 'get_all_page'}, res => {
-        this.clazzList = res.data.pageList
-        this.total = res.data.total
-        this.currPage = res.data.pageNum
-      })
+        this.clazzList = res.data.t;
+        this.total = res.data.totalPages;
+        this.currPage = this.currPage + 1
+      });
       // 获取所有班级号以及年级号
       this.getClazz({action: 'get_clazz_info'}, res => {
-        this.grades = res.data.grades
-        this.clazzNums = res.data.clazzNums
-        this.grades.splice(0, 0, '')
+        this.grades = res.data.t.grades;
+        this.clazzNums = res.data.t.clazzNums;
+        this.grades.splice(0, 0, '');
         this.clazzNums.splice(0, 0, '')
       })
     },
