@@ -24,7 +24,7 @@
         <el-button type="primary" plain @click="pageChange(1)">搜索</el-button>
       </div>
       <el-table :data="clazzList" stripe style="width: 100%">
-        <el-table-column align="center" prop="grade" label="年级" width="180">
+        <el-table-column align="center" prop="type" label="年级" width="180">
         </el-table-column>
         <el-table-column align="center" prop="startClazzNum" label="班级号" width="180">
         </el-table-column>
@@ -60,6 +60,7 @@
         total: '',
         currPage: '',
         selectGrade: '',
+        selectGradeNum: '',
         grades: [],
         selectClazzNum: '',
         clazzNums: [],
@@ -93,7 +94,7 @@
         let param = {
           action: 'get_all_page',
           pageNo: page,
-          grade: this.selectGrade,
+          grade: this.selectGradeNum,
           clazzNum: this.selectClazzNum,
           headTeacherName: this.inputHeadTeacher
         };
@@ -119,6 +120,16 @@
             }
           })
         }
+      },
+      getGrade(grade) {
+        switch (grade) {
+          case '一年级':
+            return 1;
+          case '二年级':
+            return 2;
+          case '三年级':
+            return 3;
+        }
       }
     },
     mounted() {
@@ -132,9 +143,15 @@
       this.getClazz({action: 'get_clazz_info'}, res => {
         this.grades = res.data.t.grades;
         this.clazzNums = res.data.t.clazzNums;
+        // 前面空出一个空的
         this.grades.splice(0, 0, '');
         this.clazzNums.splice(0, 0, '')
       })
+    },
+    watch: {
+      selectGrade: function (val) {
+        this.selectGradeNum = this.getGrade(val);
+      }
     },
     created() {
       window.aaa = this

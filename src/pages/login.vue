@@ -69,7 +69,7 @@
                 teacherNum: this.username,
                 password: this.password
               } }).then(res => {
-              this.teacherIdentity = res.data.identity
+              this.teacherIdentity = res.data.t.identity;
               if (this.teacherIdentity === "admin") {
                 // this.$router.push({ path: '/home'})
                 window.loaction.href = window.location.host + '/#/home'

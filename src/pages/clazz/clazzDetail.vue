@@ -98,7 +98,7 @@
             callback && callback(res)
           })
         }catch (e) {
-          console.log(e)
+          console.log(e);
           this.$message.error('获取班级信息失败！')
         }
 
@@ -108,10 +108,10 @@
       }
     },
     mounted() {
-      this.clazzId = this.$route.params.id
+      this.clazzId = this.$route.params.id;
       this.getClazz({}, this.clazzId, res => {
-        this.clazzName = res.data.grade + ' ('+ res.data.startClazzNum + ')'
-        this.headTeacherName = res.data.headTeacherName
+        this.clazzName = res.data.t.clazzName;
+        this.headTeacherName = res.data.t.headTeacherName
       })
     }
   }

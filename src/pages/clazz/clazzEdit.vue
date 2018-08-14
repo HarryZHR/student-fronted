@@ -25,7 +25,8 @@
         </div>
         <el-table :data="teachers" align="center">
           <el-table-column property="teacherNum" label="工号" width="150" align="center"></el-table-column>
-          <el-table-column property="teacherName" label="姓名" width="200" align="center"></el-table-column>
+          <el-table-column property="teacherName" label="姓名" width="150" align="center"></el-table-column>
+          <el-table-column property="clazzName" label="管理班级" width="150" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button @click="selectTeacher(scope.row)">选择</el-button>
@@ -47,7 +48,7 @@
         <el-table-column property="studentPost" label="职务" width="200" align="center"></el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button @click="selectTeacher(scope.row)">选择</el-button>
+            <el-button>选择</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,7 +62,7 @@
 
 <script>
   import Visit from '@/resources/axios'
-  import {TeacherResource} from '../../resources/index'
+  import {TeacherResource, ClazzResource} from '../../resources/index'
   export default {
     name: "clazzEdit",
     data() {
@@ -92,22 +93,38 @@
       }
     },
     methods: {
+      async getClazz(param = {}, id, callback) {
+        try {
+          await Visit.get(ClazzResource, param, id).then(function (res) {
+            callback && callback(res)
+          })
+        }catch (e) {
+          console.log(e);
+          this.$message.error('获取班级信息失败！')
+        }
+
+      },
       async getTeacher(param = {}, callback) {
         try {
           await Visit.get(TeacherResource, param).then(function (res) {
             callback && callback(res)
           })
         } catch (e) {
-          console.log(e)
+          console.log(e);
           this.$message.error('获取教师信息失败')
         }
 
       },
       openDialog() {
-        this.dialogTableVisible = true
+        this.dialogTableVisible = true;
         this.getTeacher({action: 'get_page'}, res => {
-          this.teachers = res.data.pageList
-          this.teacherTotal = res.data.total
+          this.teachers = res.data.t;
+          this.teacherTotal = res.data.totalPages
+          for (let i = 0; i < this.teachers.length; i++) {
+            if (this.teachers[i].clazzName === null) {
+
+            }
+          }
         })
       },
       dialogPageChange(page) {
@@ -116,17 +133,24 @@
           pageNo: page,
           teacherNum: this.selectTeacherNum,
           teacherName: this.selectTeacherName
-        }
+        };
         this.getTeacher(param, res => {
-          this.teachers = res.data.pageList
-          this.teacherTotal = res.data.total
+          this.teachers = res.data.t;
+          this.teacherTotal = res.data.totalPages
         })
       },
       selectTeacher(row) {
-        this.headTeacher.teacherId = row.id
-        this.headTeacher.teacherName = row.name
+        this.headTeacher.teacherId = row.teacherId;
+        this.headTeacher.teacherName = row.teacherName;
         this.dialogTableVisible = false
       }
+    },
+    mounted() {
+      this.clazzId = this.$route.params.id
+      this.getClazz({}, this.clazzId, res => {
+        this.clazzName = res.data.t.clazzName;
+        this.headTeacherName = res.data.t.headTeacherName
+      })
     }
   }
 </script>
