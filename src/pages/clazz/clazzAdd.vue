@@ -2,7 +2,7 @@
   <div>
     <div class="margin-bottom-20">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item in this.breadCrumbList" :to="{path: item.link}">{{ item.name }}
+        <el-breadcrumb-item v-for="item in this.breadCrumbList" :key="item.name" :to="{path: item.link}">{{ item.name }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -41,15 +41,16 @@
           </div>
           <el-table :data="teachers" align="center">
             <el-table-column property="teacherNum" label="工号" width="150" align="center"></el-table-column>
-            <el-table-column property="teacherName" label="姓名" width="200" align="center"></el-table-column>
+            <el-table-column property="teacherName" label="姓名" width="150" align="center"></el-table-column>
+            <el-table-column property="clazzName" label="管理班级" width="150" align="center"></el-table-column>
             <el-table-column label="操作" width="200" align="center">
               <template slot-scope="scope">
-                <el-button @click="selectTeacher(scope.row)">选择</el-button>
+                <el-button :disabled="scope.row.clazzName !== null" @click="selectTeacher(scope.row)">选择</el-button>
               </template>
             </el-table-column>
           </el-table>
           <div class="block text-right padding-top-20">
-            <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10">
+            <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="teacherCurrPage">
             </el-pagination>
           </div>
         </el-dialog>
@@ -78,6 +79,7 @@
         dialogTableVisible: false,
         teachers: [],
         teacherTotal:'',
+        teacherCurrPage: 1,
         selectTeacherNum: '',
         selectTeacherName: '',
         clazzType: [
@@ -152,7 +154,7 @@
           })
         } catch (e) {
           console.log(e);
-          this.$message.warning('出错，创建班级失败！')
+          this.$message.error('出错，创建班级失败！')
         }
       },
       async getTeacher(param, callback) {
@@ -162,7 +164,7 @@
           })
         } catch (e) {
           console.log(e);
-          this.$message.warning('获取教师失败')
+          this.$message.error('获取教师失败')
         }
       },
       clazzAdd(formName) {
@@ -183,7 +185,7 @@
                   name: 'clazzManagePage'
                 })
               } else if (res.data.t.colNum === 0) {
-                this.$message.error('创建班级失败，班级已经存在！');
+                this.$message.warning('创建班级失败，班级已经存在！');
               } else if (res.data.t.colNum > 1) {
                 this.$message.success('批量创建成功！新增' + res.data.t.colNum + '个班级');
                 this.$router.push({
@@ -208,9 +210,12 @@
         let param = {
           action: 'get_page',
           pageNo: page,
+          pageSize: 5,
+          pageType: 'headTeacher',
           teacherNum: this.selectTeacherNum,
           teacherName: this.selectTeacherName
         };
+        this.teacherCurrPage = page;
         this.getTeacher(param, res => {
           this.teachers = res.data.t;
           this.teacherTotal = res.data.totalPages

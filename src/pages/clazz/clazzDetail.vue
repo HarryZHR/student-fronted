@@ -2,14 +2,14 @@
   <div>
     <div class="margin-bottom-20">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item in this.breadCrumbList" :to="{path: item.link}">{{ item.name }}
+        <el-breadcrumb-item v-for="item in this.breadCrumbList" :key="item.name" :to="{path: item.link}">{{ item.name }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="text-left margin-bottom-20">
+    <div class="text-left margin-bottom-20 font-14 color-gray">
       班级名：<span>{{ clazzName }}</span>
     </div>
-    <div class="text-left margin-bottom-20">
+    <div class="text-left margin-bottom-20 font-14 color-gray">
       班主任：<span>{{ headTeacherName }}</span>
     </div>
     <el-table :data="students" stripe style="width: 100%">
@@ -28,7 +28,7 @@
       </el-table-column>
     </el-table>
     <div class="block text-right padding-top-20">
-      <el-pagination background layout="prev, pager, next" @current-change="pageChange" :total="total * 10">
+      <el-pagination background layout="prev, pager, next" @current-change="pageChange" :total="total * 10" :current-page="currPage">
       </el-pagination>
     </div>
   </div>
@@ -87,7 +87,8 @@
         clazzName: '',
         headTeacherName: '李四',
         total: 10,
-        clazzId: ''
+        clazzId: '',
+        currPage: 1
       }
 
     },

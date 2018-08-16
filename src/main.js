@@ -13,6 +13,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)
+// Vue.use(require('dateformat'))
+Vue.use(require('vue-moment'));
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */

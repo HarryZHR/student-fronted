@@ -2,7 +2,7 @@
   <div>
     <div class="margin-bottom-20">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item in this.breadCrumbList" :to="{path: item.link}">{{ item.name }}
+        <el-breadcrumb-item v-for="item in this.breadCrumbList" :key="item.name" :to="{path: item.link}">{{ item.name }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -13,7 +13,7 @@
     <div>
       <div class="text-left margin-bottom-20">
         <el-select v-model="selectGrade" placeholder="年级" class="margin-right-20">
-          <el-option v-for="item in grades" :label="item" :value="item">
+          <el-option v-for="item in grades" :key="item" :label="item" :value="item">
           </el-option>
         </el-select>
         <el-select v-model="selectClazzNum" placeholder="班级号" class="margin-right-20">
@@ -40,11 +40,9 @@
         </el-table-column>
       </el-table>
     </div>
-    <div>
-      <div class="block text-right padding-top-20">
-        <el-pagination background layout="prev, pager, next" @current-change="pageChange" :total="total * 10">
-        </el-pagination>
-      </div>
+    <div class="block text-right padding-top-20">
+      <el-pagination background layout="prev, pager, next" @current-change="pageChange" :total="total * 10" :current-page="currPage">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -58,7 +56,7 @@
       return {
         clazzList: [],
         total: '',
-        currPage: '',
+        currPage: 1,
         selectGrade: '',
         selectGradeNum: '',
         grades: [],
@@ -98,10 +96,10 @@
           clazzNum: this.selectClazzNum,
           headTeacherName: this.inputHeadTeacher
         };
+        this.currPage = page;
         this.getClazz(param, res => {
           this.clazzList = res.data.t;
           this.total = res.data.totalPages;
-          this.currPage = this.currPage + 1
         })
       },
       toAddClazz(flag) {
@@ -137,7 +135,6 @@
       this.getClazz({action: 'get_all_page'}, res => {
         this.clazzList = res.data.t;
         this.total = res.data.totalPages;
-        this.currPage = this.currPage + 1
       });
       // 获取所有班级号以及年级号
       this.getClazz({action: 'get_clazz_info'}, res => {

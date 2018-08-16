@@ -2,19 +2,20 @@
   <div>
     <div class="margin-bottom-20">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item in this.breadCrumbList" :to="{path: item.link}">{{ item.name }}
+        <el-breadcrumb-item v-for="item in this.breadCrumbList" :key="item.name" :to="{path: item.link}">{{ item.name }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="text-left margin-bottom-20">
+    <div class="text-left margin-bottom-20 font-14 color-gray">
       班级名：<span>{{ clazzName }}</span>
     </div>
-    <div class="text-left margin-bottom-20">
+    <div class="text-left margin-bottom-20 font-14 color-gray">
       班主任：
       <el-input class="width-200" v-model="headTeacher.teacherName">
         <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="openDialog">
         </i>
       </el-input>
+      <el-button type="warning" @click="cancelHeadTeacher">解除关系</el-button>
       <el-dialog title="选择班主任" :visible.sync="dialogTableVisible">
         <div align="center">
           教师工号：
@@ -29,12 +30,12 @@
           <el-table-column property="clazzName" label="管理班级" width="150" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-              <el-button @click="selectTeacher(scope.row)">选择</el-button>
+              <el-button :disabled="scope.row.clazzName !== null" @click="selectTeacher(scope.row)">选择</el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="block text-right padding-top-20">
-          <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10">
+          <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="teacherCurrPage">
           </el-pagination>
         </div>
       </el-dialog>
@@ -53,7 +54,7 @@
         </el-table-column>
       </el-table>
       <div class="block text-right padding-top-20">
-        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10">
+        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="studentCurrPage">
         </el-pagination>
       </div>
     </div>
@@ -80,16 +81,20 @@
             name: '编辑班级',
           }
         ],
-        clazzName: '高三(8)班',
+        clazzName: '',
         headTeacher:{
-          teacherName: '李四',
-          teacherId: '212121'
+          teacherName: '',
+          teacherId: ''
         },
         dialogTableVisible: false,
         teachers:[],
         teacherTotal: '',
+        teacherCurrPage: 1,
+        studentTotal: '',
+        studentCurrPage: 1,
         selectTeacherNum: '',
-        selectTeacherName: ''
+        selectTeacherName: '',
+        clazzId: ''
       }
     },
     methods: {
@@ -102,7 +107,6 @@
           console.log(e);
           this.$message.error('获取班级信息失败！')
         }
-
       },
       async getTeacher(param = {}, callback) {
         try {
@@ -113,43 +117,68 @@
           console.log(e);
           this.$message.error('获取教师信息失败')
         }
-
+      },
+      async updateClazz(param, body, id, callback) {
+        try {
+          await Visit.update(ClazzResource, param, body, id ).then(function (res) {
+            callback && callback(res)
+          })
+        } catch (e) {
+          console.log(e);
+          this.$message.error("修改班级信息失败!")
+        }
+      },
+      updClazz(teacherId, message) {
+        let id = this.clazzId;
+        let body = {
+          headTeacherId: teacherId
+        };
+        this.updateClazz({},body, id, res => {
+          if (res.data.t.colNum === 1) {
+            this.$message.success( message + '成功！')
+          } else {
+            this.$message.warning( message + '失败！')
+          }
+        })
       },
       openDialog() {
         this.dialogTableVisible = true;
         this.getTeacher({action: 'get_page'}, res => {
           this.teachers = res.data.t;
-          this.teacherTotal = res.data.totalPages
-          for (let i = 0; i < this.teachers.length; i++) {
-            if (this.teachers[i].clazzName === null) {
-
-            }
-          }
+          this.teacherTotal = res.data.totalPages;
         })
       },
       dialogPageChange(page) {
+        this.teacherCurrPage = page;
         let param = {
           action: 'get_page',
           pageNo: page,
+          pageSize: 5,
+          pageType: 'headTeacher',
           teacherNum: this.selectTeacherNum,
           teacherName: this.selectTeacherName
         };
         this.getTeacher(param, res => {
           this.teachers = res.data.t;
           this.teacherTotal = res.data.totalPages
-        })
+        });
       },
       selectTeacher(row) {
         this.headTeacher.teacherId = row.teacherId;
         this.headTeacher.teacherName = row.teacherName;
-        this.dialogTableVisible = false
+        this.dialogTableVisible = false;
+        this.updClazz(row.teacherId, '修改');
+      },
+      cancelHeadTeacher() {
+        this.updClazz(null, '解除');
+        this.headTeacher.teacherName = '暂未设置'
       }
     },
     mounted() {
-      this.clazzId = this.$route.params.id
+      this.clazzId = this.$route.params.id;
       this.getClazz({}, this.clazzId, res => {
         this.clazzName = res.data.t.clazzName;
-        this.headTeacherName = res.data.t.headTeacherName
+        this.headTeacher.teacherName = res.data.t.headTeacherName
       })
     }
   }
@@ -158,5 +187,10 @@
 <style scoped>
   .el-table td, .el-table th {
     padding: 5px 0;
+  }
+
+  .bottom {
+    position: fixed;
+    bottom: 20px;
   }
 </style>

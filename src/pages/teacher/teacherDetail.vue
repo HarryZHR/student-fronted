@@ -2,7 +2,7 @@
   <div>
     <div class="margin-bottom-20">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item in this.breadCrumbList" :to="{path: item.link}">{{ item.name }}
+        <el-breadcrumb-item v-for="item in this.breadCrumbList" :key="item.name" :to="{path: item.link}">{{ item.name }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -54,15 +54,15 @@
             callback && callback(res)
           })
         } catch (e) {
-          console.log(e)
+          console.log(e);
           this.$message.error('获取教师信息失败！')
         }
       }
     },
     mounted() {
-      let id = this.$route.params.id
+      let id = this.$route.params.id;
       this.getTeacher({action: 'get_one'},id, res => {
-        this.teacherGender = res.data.t.teacherGender;
+        this.teacherGender = res.data.t.teacherGenderValue;
         this.teacherName = res.data.t.teacherName;
         this.teacherNum = res.data.t.teacherNum;
         this.teacherBirthday = res.data.t.teacherBirthday
