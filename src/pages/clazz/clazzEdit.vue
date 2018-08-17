@@ -15,7 +15,7 @@
         <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="openDialog">
         </i>
       </el-input>
-      <el-button type="warning" @click="cancelHeadTeacher">解除关系</el-button>
+      <el-button type="warning" :disabled="headTeacher.teacherName === '暂未设置'" @click="cancelHeadTeacher">解除关系</el-button>
       <el-dialog title="选择班主任" :visible.sync="dialogTableVisible">
         <div align="center">
           教师工号：
@@ -143,7 +143,7 @@
       },
       openDialog() {
         this.dialogTableVisible = true;
-        this.getTeacher({action: 'get_page'}, res => {
+        this.getTeacher({action: 'get_page',pageType: 'headTeacher'}, res => {
           this.teachers = res.data.t;
           this.teacherTotal = res.data.totalPages;
         })
@@ -172,6 +172,7 @@
       cancelHeadTeacher() {
         this.updClazz(null, '解除');
         this.headTeacher.teacherName = '暂未设置'
+
       }
     },
     mounted() {

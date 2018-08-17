@@ -9,7 +9,6 @@
           <left-nav></left-nav>
         </el-aside>
         <el-main>
-          <!--<clazz-manage></clazz-manage>-->
           <router-view></router-view>
         </el-main>
       </el-container>

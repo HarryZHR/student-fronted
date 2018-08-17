@@ -10,8 +10,10 @@ import teacherManage from '@/pages/teacher/teacherManage'
 import teacherAdd from '@/pages/teacher/teacherAdd'
 import teacherDetail from '@/pages/teacher/teacherDetail'
 import teacherEdit from '@/pages/teacher/teacherEdit'
+import studentManage from '@/pages/student/studentManage'
+import studentAdd from '@/pages/student/studentAdd'
 
-Vue.use(Router)
+Vue.use(Router);
 export default new Router({
   routes: [
     {
@@ -59,6 +61,16 @@ export default new Router({
     {
       path: '/teacher/:id/edit',
       component: teacherEdit
+    },
+    {
+      path: '/student-manage',
+      name: 'studentManagePage',
+      component: studentManage
+    },
+    {
+      path: '/student-add',
+      name: 'studentAddPage',
+      component: studentAdd
     }
   ]
 })

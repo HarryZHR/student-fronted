@@ -21,16 +21,16 @@
             <span slot="title">教师管理</span>
           </el-menu-item>
         </router-link>
-        <router-link to="/test1">
+        <router-link to="/student-manage">
           <el-menu-item index="3">
             <i class="el-icon-menu"></i>
-            <span slot="title">导航三</span>
+            <span slot="title">学生管理</span>
           </el-menu-item>
         </router-link>
         <router-link to="/test1">
           <el-menu-item index="4">
             <i class="el-icon-menu"></i>
-            <span slot="title">导航四</span>
+            <span slot="title">课程管理</span>
           </el-menu-item>
         </router-link>
       </el-menu>
