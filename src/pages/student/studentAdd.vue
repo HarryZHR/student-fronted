@@ -13,6 +13,9 @@
       <el-form-item label="学生姓名：" align="left" prop="studentName">
         <el-input v-model="studentForm.studentName" class="width-300"></el-input>
       </el-form-item>
+      <el-form-item label="入学年份：" align="left" prop="startYear">
+        <el-input type="number" v-model.number="studentForm.startYear" class="width-300"></el-input>
+      </el-form-item>
       <el-form-item label="学生性别：" align="left" prop="studentGender">
         <el-radio-group v-model="studentForm.studentGender">
           <el-radio label="male">男</el-radio>
@@ -54,7 +57,8 @@
           studentNum: '',
           studentName: '',
           studentGender: '',
-          studentBirthday: ''
+          studentBirthday: '',
+          startYear: ''
         },
         studentRules: {
           studentNum: [
@@ -65,6 +69,9 @@
           ],
           studentGender: [
             {required: true, message: '性别不能为空！', trigger: 'blur'}
+          ],
+          startYear: [
+            {required: true, message: '入学年份不能为空！', trigger: 'blur'}
           ]
         }
       }
