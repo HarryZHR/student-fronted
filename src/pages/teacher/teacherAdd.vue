@@ -101,9 +101,9 @@
               teacherBirthday: this.teacherForm.teacherBirthday
             };
             this.saveTeacher(param, body, res => {
-              if (res.data.t.colNum === 1){
+              if (res.data.t === 1){
                 this.$message.success('保存成功！')
-              } else if (res.data.t.colNum === 0) {
+              } else if (res.data.t === 0) {
                 this.$message.warning('保存失败！')
               }
             })

@@ -12,6 +12,8 @@ import teacherDetail from '@/pages/teacher/teacherDetail'
 import teacherEdit from '@/pages/teacher/teacherEdit'
 import studentManage from '@/pages/student/studentManage'
 import studentAdd from '@/pages/student/studentAdd'
+import studentDetail from '@/pages/student/studentDetail'
+import studentEdit from '@/pages/student/studentEdit'
 
 Vue.use(Router);
 export default new Router({
@@ -71,6 +73,14 @@ export default new Router({
       path: '/student-add',
       name: 'studentAddPage',
       component: studentAdd
+    },
+    {
+      path: '/student/:id/view',
+      component: studentDetail
+    },
+    {
+      path: '/student/:id/edit',
+      component: studentEdit
     }
   ]
 })

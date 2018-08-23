@@ -179,15 +179,15 @@
               'headTeacherId': this.clazzForm.headTeacherId
             };
             this.saveClazz(param, body, res => {
-              if (res.data.t.colNum === 1) {
+              if (res.data.t === 1) {
                 this.$message.success('创建班级成功！');
                 this.$router.push({
                   name: 'clazzManagePage'
                 })
-              } else if (res.data.t.colNum === 0) {
+              } else if (res.data.t === 0) {
                 this.$message.warning('创建班级失败，班级已经存在！');
-              } else if (res.data.t.colNum > 1) {
-                this.$message.success('批量创建成功！新增' + res.data.t.colNum + '个班级');
+              } else if (res.data.t > 1) {
+                this.$message.success('批量创建成功！新增' + res.data.t + '个班级');
                 this.$router.push({
                   name: 'clazzManagePage'
                 })

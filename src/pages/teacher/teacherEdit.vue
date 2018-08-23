@@ -20,8 +20,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="出生年月：" align="left">
-        <el-date-picker v-model="teacherForm.teacherBirthday" default-value="1980-01-01" type="date"
-                        placeholder="选择日期">
+        <el-date-picker v-model="teacherForm.teacherBirthday" default-value="1980-01-01" type="date"  value-format="yyyy-MM-dd" placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item align="left">
@@ -113,7 +112,7 @@
             };
             let id = this.$route.params.id;
             this.updateTeacher(param, body, id, res => {
-              if (res.data.t.colNum === 1) {
+              if (res.data.t === 1) {
                 this.$message.success('修改成功！')
               } else {
                 this.$message.warning('修改失败！')
@@ -131,7 +130,7 @@
     mounted() {
       let id = this.$route.params.id;
       this.getTeacher({action: 'get_one'},id, res => {
-        this.teacherData = res.data.t
+        this.teacherData = res.data.t;
         this.initTeacherData()
       });
       window.aaa = this

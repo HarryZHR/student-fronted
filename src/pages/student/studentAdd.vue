@@ -7,8 +7,8 @@
       </el-breadcrumb>
     </div>
     <el-form label-width="100px" :model="studentForm" :rules="studentRules" ref="studentForm">
-      <el-form-item label="学生学号：" align="left" prop="studentNum">
-        <el-input v-model="studentForm.studentNum" class="width-300"></el-input>
+      <el-form-item label="学生学号：" align="left" prop="studentNo">
+        <el-input v-model="studentForm.studentNo" class="width-300"></el-input>
       </el-form-item>
       <el-form-item label="学生姓名：" align="left" prop="studentName">
         <el-input v-model="studentForm.studentName" class="width-300"></el-input>
@@ -23,8 +23,11 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="出生年月：" align="left">
-        <el-date-picker v-model="studentForm.studentBirthday" value-format="yyyy-MM-dd" @change="changedate" default-value="1995-01-01" type="date" placeholder="选择日期">
+        <el-date-picker v-model="studentForm.studentBirthday" value-format="yyyy-MM-dd" @change="changedate" default-value="2003-01-01" type="date" placeholder="选择日期">
         </el-date-picker>
+      </el-form-item>
+      <el-form-item label="所属班级：" align="left">
+        <el-input v-model="studentClazz" class="width-300"></el-input>
       </el-form-item>
       <el-form-item align="left">
         <el-button type="primary" @click="addStudent('studentForm')">立即创建</el-button>
@@ -54,14 +57,15 @@
           }
         ],
         studentForm:{
-          studentNum: '',
+          studentNo: '',
           studentName: '',
           studentGender: '',
           studentBirthday: '',
           startYear: ''
         },
+        studentClazz: '11',
         studentRules: {
-          studentNum: [
+          studentNo: [
             {required: true, message: '学号不能为空！', trigger: 'blur'}
           ],
           studentName: [
@@ -97,16 +101,19 @@
               action: 'save_one'
             };
             let body = {
-              studentNum: this.studentForm.studentNum,
+              studentNo: this.studentForm.studentNo,
               studentName: this.studentForm.studentName,
               studentGender: this.studentForm.studentGender,
-              studentBirthday: this.studentForm.studentBirthday
+              studentBirthday: this.studentForm.studentBirthday,
+              startYear: this.studentForm.startYear
             };
             this.saveStudent(param, body, res => {
-              if (res.data.t.colNum === 1) {
+              if (res.data.t === 1) {
                 this.$message.success('保存成功！')
-              } else if (res.data.t.colNum === 0) {
+              } else if (res.data.t === 0) {
                 this.$message.warning('保存失败！')
+              } else if (res.data.t === -1) {
+                this.$message.warning('学号重复，保存失败！')
               }
             })
           } else {

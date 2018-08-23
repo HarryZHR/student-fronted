@@ -134,7 +134,7 @@
           headTeacherId: teacherId
         };
         this.updateClazz({},body, id, res => {
-          if (res.data.t.colNum === 1) {
+          if (res.data.t === 1) {
             this.$message.success( message + '成功！')
           } else {
             this.$message.warning( message + '失败！')
