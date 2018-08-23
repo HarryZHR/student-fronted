@@ -26,9 +26,6 @@
         <el-date-picker v-model="studentForm.studentBirthday" value-format="yyyy-MM-dd" @change="changedate" default-value="2003-01-01" type="date" placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="所属班级：" align="left">
-        <el-input v-model="studentClazz" class="width-300"></el-input>
-      </el-form-item>
       <el-form-item align="left">
         <el-button type="primary" @click="addStudent('studentForm')">立即创建</el-button>
       </el-form-item>
@@ -63,7 +60,6 @@
           studentBirthday: '',
           startYear: ''
         },
-        studentClazz: '11',
         studentRules: {
           studentNo: [
             {required: true, message: '学号不能为空！', trigger: 'blur'}

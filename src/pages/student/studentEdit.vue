@@ -26,6 +26,16 @@
         <el-date-picker v-model="studentForm.studentBirthday" default-value="2003-01-01" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="所属班级：" align="left">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in studentClazz"
+            :key="item"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item align="left">
         <el-button type="primary" @click="updStudent('studentForm')">修改</el-button>
         <el-button @click="resetForm()">重置</el-button>
@@ -62,6 +72,7 @@
           studentBirthday: '',
           startYear: ''
         },
+        studentClazz: [],
         studentData: {},
         studentRules: {
           studentNo: [
@@ -142,7 +153,10 @@
         this.studentData = res.data.t;
         this.initData();
       });
-
+      this.getStudentOne({action: 'get_clazz'}, this.studentId, res => {
+        this.studentData = res.data.t;
+        this.initData();
+      });
     }
   }
 </script>
