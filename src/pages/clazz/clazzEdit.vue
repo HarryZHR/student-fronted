@@ -12,35 +12,16 @@
     <div class="text-left margin-bottom-20 font-14 color-gray">
       班主任：
       <el-input class="width-200" v-model="headTeacher.teacherName">
-        <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="openDialog">
+        <i class="el-icon-edit el-input__icon cursor-pointer" slot="suffix" @click="openDialog('teacher')">
         </i>
       </el-input>
       <el-button type="warning" :disabled="headTeacher.teacherName === '暂未设置'" @click="cancelHeadTeacher">解除关系</el-button>
-      <el-dialog title="选择班主任" :visible.sync="dialogTableVisible">
-        <div align="center">
-          教师工号：
-          <el-input class="width-150" v-model="selectTeacherNum"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
-          教师姓名：
-          <el-input class="width-150" v-model="selectTeacherName"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-button type="primary" @click="dialogPageChange(1)">搜索</el-button>
-        </div>
-        <el-table :data="teachers" align="center">
-          <el-table-column property="teacherNum" label="工号" width="150" align="center"></el-table-column>
-          <el-table-column property="teacherName" label="姓名" width="150" align="center"></el-table-column>
-          <el-table-column property="clazzName" label="管理班级" width="150" align="center"></el-table-column>
-          <el-table-column label="操作" width="200" align="center">
-            <template slot-scope="scope">
-              <el-button :disabled="scope.row.clazzName !== null" @click="selectTeacher(scope.row)">选择</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="block text-right padding-top-20">
-          <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="teacherCurrPage">
-          </el-pagination>
-        </div>
-      </el-dialog>
     </div>
     <div>
+      <div class="text-left margin-bottom-20 font-14 color-gray">
+        所属学生：
+        <el-button @click="openDialog('student')">添加学生</el-button>
+      </div>
       <el-table>
         <el-table-column property="studentNum" label="学号" width="150" align="center"></el-table-column>
         <el-table-column property="studentName" label="姓名" width="200" align="center"></el-table-column>
@@ -49,7 +30,7 @@
         <el-table-column property="studentPost" label="职务" width="200" align="center"></el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button>选择</el-button>
+            <el-button >选择</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -58,12 +39,36 @@
         </el-pagination>
       </div>
     </div>
+    <!-- 弹窗 -->
+    <el-dialog :title="select === 'teacher' ? '选择班主任' : '选择学生'" :visible.sync="dialogTableVisible">
+      <div align="center">
+        <label v-text="select === 'teacher' ? '教师工号：' : '学生学号：'"></label>
+        <el-input class="width-150" v-model="selectTeacherNum"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label v-text="select === 'teacher' ? '教师姓名：' : '学生姓名：'"></label>
+        <el-input class="width-150" v-model="selectTeacherName"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+        <el-button type="primary" @click="dialogPageChange(1)">搜索</el-button>
+      </div>
+      <el-table :data="teachers" align="center">
+        <el-table-column :property="select === 'teacher' ? 'teacherNum' : 'studentNo'" :label="select === 'teacher' ? '工号' : '学号'" width="150" align="center"></el-table-column>
+        <el-table-column :property="select === 'teacher' ? 'teacherName' : 'studentName'" label="姓名" width="150" align="center"></el-table-column>
+        <!--<el-table-column property="clazzName" label="管理班级" width="150" align="center"></el-table-column>-->
+        <el-table-column label="操作" width="200" align="center">
+          <template slot-scope="scope">
+            <el-button :disabled="scope.row.clazzName !== null" @click="selectTeacher(scope.row)">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block text-right padding-top-20">
+        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="teacherCurrPage">
+        </el-pagination>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import Visit from '@/resources/axios'
-  import {TeacherResource, ClazzResource} from '../../resources/index'
+  import {TeacherResource, ClazzResource, StudentResource} from '../../resources/index'
   export default {
     name: "clazzEdit",
     data() {
@@ -94,10 +99,21 @@
         studentCurrPage: 1,
         selectTeacherNum: '',
         selectTeacherName: '',
-        clazzId: ''
+        clazzId: '',
+        select: ''
       }
     },
     methods: {
+      async getStudent(param, callback) {
+        try {
+          Visit.get(StudentResource, param).then(function (res) {
+            callback && callback(res)
+          })
+        } catch (e) {
+          console.log(e);
+          this.$message.error('获取学生信息失败！')
+        }
+      },
       async getClazz(param = {}, id, callback) {
         try {
           await Visit.get(ClazzResource, param, id).then(function (res) {
@@ -141,12 +157,21 @@
           }
         })
       },
-      openDialog() {
+      openDialog(select) {
         this.dialogTableVisible = true;
-        this.getTeacher({action: 'get_page',pageType: 'headTeacher'}, res => {
-          this.teachers = res.data.t;
-          this.teacherTotal = res.data.totalPages;
-        })
+        this.select = select;
+        // 选择班主任
+        if (select === 'teacher') {
+          this.getTeacher({action: 'get_page',pageType: 'headTeacher'}, res => {
+            this.teachers = res.data.t;
+            this.teacherTotal = res.data.totalPages;
+          })
+        } else if (select === 'student') {
+          this.getStudent({action: 'get_list'}, res => {
+            this.teachers =res.data.t;
+            this.teacherTotal = res.data.totalPages;
+          })
+        }
       },
       dialogPageChange(page) {
         this.teacherCurrPage = page;
