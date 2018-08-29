@@ -35,7 +35,7 @@
         </el-table-column>
       </el-table>
       <div class="block text-right padding-top-20">
-        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="studentCurrPage">
+        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="studentTotal * 10" :current-page="studentCurrPage">
         </el-pagination>
       </div>
     </div>
@@ -43,23 +43,24 @@
     <el-dialog :title="select === 'teacher' ? '选择班主任' : '选择学生'" :visible.sync="dialogTableVisible">
       <div align="center">
         <label v-text="select === 'teacher' ? '教师工号：' : '学生学号：'"></label>
-        <el-input class="width-150" v-model="selectTeacherNum"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+        <el-input class="width-150" v-model="selectNo"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
         <label v-text="select === 'teacher' ? '教师姓名：' : '学生姓名：'"></label>
-        <el-input class="width-150" v-model="selectTeacherName"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
+        <el-input class="width-150" v-model="selectName"></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
         <el-button type="primary" @click="dialogPageChange(1)">搜索</el-button>
       </div>
-      <el-table :data="teachers" align="center">
+      <el-table :data="dialogData" align="center">
         <el-table-column :property="select === 'teacher' ? 'teacherNum' : 'studentNo'" :label="select === 'teacher' ? '工号' : '学号'" width="150" align="center"></el-table-column>
         <el-table-column :property="select === 'teacher' ? 'teacherName' : 'studentName'" label="姓名" width="150" align="center"></el-table-column>
         <!--<el-table-column property="clazzName" label="管理班级" width="150" align="center"></el-table-column>-->
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button :disabled="scope.row.clazzName !== null" @click="selectTeacher(scope.row)">选择</el-button>
+            <el-button v-if="select === 'teacher'" :disabled="scope.row.clazzName !== null" @click="selectTeacher(scope.row)">选择</el-button>
+            <el-button v-if="select === 'student'" @click="selectStudent(scope.row)">选择</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="block text-right padding-top-20">
-        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="teacherTotal * 10" :current-page="teacherCurrPage">
+        <el-pagination background layout="prev, pager, next" @current-change="dialogPageChange" :total="dialogDataTotal * 10" :current-page="dialogDataCurrPage">
         </el-pagination>
       </div>
     </el-dialog>
@@ -92,13 +93,13 @@
           teacherId: ''
         },
         dialogTableVisible: false,
-        teachers:[],
-        teacherTotal: '',
-        teacherCurrPage: 1,
+        dialogData:[],
+        dialogDataTotal: '',
+        dialogDataCurrPage: 1,
         studentTotal: '',
         studentCurrPage: 1,
-        selectTeacherNum: '',
-        selectTeacherName: '',
+        selectNo: '',
+        selectName: '',
         clazzId: '',
         select: ''
       }
@@ -122,6 +123,16 @@
         }catch (e) {
           console.log(e);
           this.$message.error('获取班级信息失败！')
+        }
+      },
+      async saveClazz(param, body, callback) {
+        try {
+          await Visit.save(ClazzResource, param, body).then(function (res) {
+            callback && callback(res)
+          })
+        } catch (e) {
+          console.log(e);
+          this.$message.error('出错，操作失败！')
         }
       },
       async getTeacher(param = {}, callback) {
@@ -163,36 +174,61 @@
         // 选择班主任
         if (select === 'teacher') {
           this.getTeacher({action: 'get_page',pageType: 'headTeacher'}, res => {
-            this.teachers = res.data.t;
-            this.teacherTotal = res.data.totalPages;
+            this.dialogData = res.data.t;
+            this.dialogDataTotal = res.data.totalPages;
           })
         } else if (select === 'student') {
           this.getStudent({action: 'get_list'}, res => {
-            this.teachers =res.data.t;
-            this.teacherTotal = res.data.totalPages;
+            this.dialogData =res.data.t;
+            this.dialogDataTotal = res.data.totalPages;
           })
         }
       },
       dialogPageChange(page) {
-        this.teacherCurrPage = page;
-        let param = {
-          action: 'get_page',
-          pageNo: page,
-          pageSize: 5,
-          pageType: 'headTeacher',
-          teacherNum: this.selectTeacherNum,
-          teacherName: this.selectTeacherName
-        };
-        this.getTeacher(param, res => {
-          this.teachers = res.data.t;
-          this.teacherTotal = res.data.totalPages
-        });
+        if (this.select === 'teacher') {
+          this.dialogDataCurrPage = page;
+          let param = {
+            action: 'get_page',
+            pageNo: page,
+            pageSize: 5,
+            pageType: 'headTeacher',
+            teacherNum: this.selectNo,
+            teacherName: this.selectName
+          };
+          this.getTeacher(param, res => {
+            this.dialogData = res.data.t;
+            this.dialogDataTotal = res.data.totalPages
+          });
+        } else if (this.select === 'student') {
+          this.dialogDataCurrPage = page;
+          let param = {
+            action: 'get_list',
+            pageNo: page,
+            pageSize: 5,
+            studentNo: this.selectNo,
+            teacherName: this.selectName
+          };
+          this.getStudent(param, res => {
+            this.dialogData = res.data.t;
+            this.dialogDataTotal = res.data.totalPages
+          });
+        }
       },
       selectTeacher(row) {
         this.headTeacher.teacherId = row.teacherId;
         this.headTeacher.teacherName = row.teacherName;
         this.dialogTableVisible = false;
         this.updClazz(row.teacherId, '修改');
+      },
+      selectStudent(row) {
+        let param = {
+          action: 'save_clazz_student',
+          studentId: row.studentId,
+          clazzId: this.clazzId
+        };
+        this.saveClazz(param,{},res => {
+
+        });
       },
       cancelHeadTeacher() {
         this.updClazz(null, '解除');
